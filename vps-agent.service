@@ -1,0 +1,24 @@
+[Unit]
+Description=vps-remote-agent — self-hosted remote shell
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=vpsagent
+WorkingDirectory=/opt/vps-remote-agent
+# If installed globally via npm, point ExecStart at the real bin, e.g.:
+#   ExecStart=/usr/bin/node /usr/local/lib/node_modules/vps-remote-agent/bin/vps-remote-agent.js --port 8443
+# Tip: `vps-remote-agent --print-service` prints this unit with correct paths.
+ExecStart=/usr/bin/node /usr/local/lib/node_modules/vps-remote-agent/bin/vps-remote-agent.js --port 8443
+Restart=on-failure
+RestartSec=5
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/vpsagent/.vps-agent /opt/vps-remote-agent
+
+[Install]
+WantedBy=multi-user.target
